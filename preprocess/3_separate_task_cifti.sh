@@ -1,13 +1,13 @@
 # Path to binary for wb_command
-WB_COMMAND=/share/sablab/nfs03/users/ghn8/lib/workbench/bin_linux64/wb_command
+WB_COMMAND=$1
 
 # Path to director containing HCP S1200 subject data
-HCP_DIR=/share/sablab/nfs03/data/HCP_200113
-OUTPUT_DIR=gifti
+HCP_DIR=$2
 
 # Path to HCP subject IDs
-SUBJLIST=sample_subj_ids.txt
+SUBJLIST=$3
 
+OUTPUT_DIR=$4
 
 
 declare -A TASK_COPEIDS=( ["LANGUAGE"]="1 2 3" ["RELATIONAL"]="1 2 3" ["SOCIAL"]="1 2 6" ["EMOTION"]="1 2 3" \
@@ -34,9 +34,7 @@ do
             RH_NIFTI_FILE=$SUBJ_OUT_DIR/zstat1.R.func.gii
             SUBCORTICAL_FILE=$SUBJ_OUT_DIR/zstat1.subcortical.nii.gz
 
-            echo $CIFTI_FILE
             if [ -f "$CIFTI_FILE" ] && [ ! -f "$LH_NIFTI_FILE" ]; then
-                echo "$WB_COMMAND -cifti-separate  $CIFTI_FILE COLUMN -metric CORTEX_LEFT $LH_NIFTI_FILE -metric CORTEX_RIGHT $RH_NIFTI_FILE -volume-all $SUBCORTICAL_FILE"
                 $WB_COMMAND -cifti-separate  $CIFTI_FILE COLUMN -metric CORTEX_LEFT $LH_NIFTI_FILE -metric CORTEX_RIGHT $RH_NIFTI_FILE -volume-all $SUBCORTICAL_FILE
             fi
         done

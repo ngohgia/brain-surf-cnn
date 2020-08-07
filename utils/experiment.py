@@ -5,9 +5,9 @@ import torch.nn.functional as F
 import numpy as np
 from collections import OrderedDict
 
-from utilities import CONTRASTS, compute_corr_coeff
+from .utilities import compute_corr_coeff
 
-def train(model, train_loader, optimizer, loss_fn, loss_type, within_subj_margin=0, across_subj_margin=0):
+def train(model, train_loader, contrasts, optimizer, loss_fn, loss_type, within_subj_margin=0, across_subj_margin=0):
     model.train()
     total_loss = 0
     total_corr = []
@@ -46,13 +46,13 @@ def train(model, train_loader, optimizer, loss_fn, loss_type, within_subj_margin
     total_corr /= len(train_loader)
     
     print('  Train: avg loss: {:.4f} - avg corr: {:.4f}'.format(total_loss, np.mean(total_corr)))
-    for j in range(len(CONTRASTS)):
-        print("      %s %s: %.4f, %.4f" % (CONTRASTS[j][0], CONTRASTS[j][1], total_corr[j*2], total_corr[j*2+1]))
+    for j in range(len(contrasts)):
+        print("      %s %s: %.4f, %.4f" % (contrasts[j][0], contrasts[j][1], total_corr[j*2], total_corr[j*2+1]))
 
     return total_loss, np.mean(total_corr)
 
 
-def eval(model, val_loader, loss_fn, loss_type, within_subj_margin=0, across_subj_margin=0):
+def eval(model, val_loader, contrasts, loss_fn, loss_type, within_subj_margin=0, across_subj_margin=0):
     model.eval()
     total_loss = 0
     total_corr = []
@@ -85,7 +85,7 @@ def eval(model, val_loader, loss_fn, loss_type, within_subj_margin=0, across_sub
     avg_corr = total_corr /  len(val_loader)
 
     print('  Val: avg loss: {:.4f} - avg corr: {:.4f}'.format(avg_loss, np.mean(avg_corr)))
-    for j in range(len(CONTRASTS)):
-        print("      %s %s: %.4f, %.4f" % (CONTRASTS[j][0], CONTRASTS[j][1], avg_corr[j*2], avg_corr[j*2+1]))
+    for j in range(len(contrasts)):
+        print("      %s %s: %.4f, %.4f" % (contrasts[j][0], contrasts[j][1], avg_corr[j*2], avg_corr[j*2+1]))
 
     return avg_loss, np.mean(avg_corr)

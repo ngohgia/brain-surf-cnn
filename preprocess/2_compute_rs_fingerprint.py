@@ -2,7 +2,6 @@ import nibabel as nib
 from nibabel import freesurfer as fs
 import os
 import numpy as np
-import matplotlib.pyplot as plt
 from nibabel import cifti2
 import nibabel.gifti as gi
 import pickle
@@ -10,13 +9,14 @@ import pickle
 import unittest
 import torch
 import torch.nn as nn
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utilities import compute_corr_coeff
+sys.path.insert(0, "..")
+from utils.utilities import compute_corr_coeff
 
-parser = ArgumentParser()
+parser = ArgumentParser(description="Compute resting-state fingerprints from timeseries in cifti format",
+                        formatter_class=ArgumentDefaultsHelpFormatter)
 
 parser.add_argument("--input_dir",
                     type=str,
@@ -65,57 +65,52 @@ if __name__ == "__main__":
     subj_ids = np.genfromtxt(args.subj_ids, dtype='<U20')
     rsfc_dir = os.path.join(args.output_dir, "rsfc_d%d_sample%d" % (args.num_ics, args.num_samples))
     os.makedirs(rsfc_dir, exist_ok=True)
-
-    subj_ids = ["352132"]
     
     for j in range(len(subj_ids)):
-        print(j+1, "/", len(subj_ids))
-    
         subj_id = subj_ids[j]
+        print(j+1, "/", len(subj_ids), ":", subj_id)
         
-        lh_subj_rest1_lr_file = os.path.join(args.input_dir, 'rfMRI_REST1_LR', subj_id, 'rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.L.func.gii')
-        lh_subj_rest1_rl_file = os.path.join(args.input_dir, 'rfMRI_REST1_RL', subj_id, 'rfMRI_REST1_RL_Atlas_MSMAll_hp2000_clean.L.func.gii')
-        lh_subj_rest2_lr_file = os.path.join(args.input_dir, 'rfMRI_REST2_LR', subj_id, 'rfMRI_REST2_LR_Atlas_MSMAll_hp2000_clean.L.func.gii')
-        lh_subj_rest2_rl_file = os.path.join(args.input_dir, 'rfMRI_REST2_RL', subj_id, 'rfMRI_REST2_RL_Atlas_MSMAll_hp2000_clean.L.func.gii')
+        lh_subj_rest1_lr_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.L.func.gii')
+        lh_subj_rest1_rl_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST1_RL_Atlas_MSMAll_hp2000_clean.L.func.gii')
+        lh_subj_rest2_lr_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST2_LR_Atlas_MSMAll_hp2000_clean.L.func.gii')
+        lh_subj_rest2_rl_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST2_RL_Atlas_MSMAll_hp2000_clean.L.func.gii')
     
-        rh_subj_rest1_lr_file = os.path.join(args.input_dir, 'rfMRI_REST1_LR', subj_id, 'rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.R.func.gii')
-        rh_subj_rest1_rl_file = os.path.join(args.input_dir, 'rfMRI_REST1_RL', subj_id, 'rfMRI_REST1_RL_Atlas_MSMAll_hp2000_clean.R.func.gii')
-        rh_subj_rest2_lr_file = os.path.join(args.input_dir, 'rfMRI_REST2_LR', subj_id, 'rfMRI_REST2_LR_Atlas_MSMAll_hp2000_clean.R.func.gii')
-        rh_subj_rest2_rl_file = os.path.join(args.input_dir, 'rfMRI_REST2_RL', subj_id, 'rfMRI_REST2_RL_Atlas_MSMAll_hp2000_clean.R.func.gii')
+        rh_subj_rest1_lr_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST1_LR_Atlas_MSMAll_hp2000_clean.R.func.gii')
+        rh_subj_rest1_rl_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST1_RL_Atlas_MSMAll_hp2000_clean.R.func.gii')
+        rh_subj_rest2_lr_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST2_LR_Atlas_MSMAll_hp2000_clean.R.func.gii')
+        rh_subj_rest2_rl_file = os.path.join(args.input_dir, subj_id, 'rfMRI_REST2_RL_Atlas_MSMAll_hp2000_clean.R.func.gii')
     
         subj_node_ts_file = os.path.join(args.node_ts_dir, "%s.txt" % subj_id)
                 
         if os.path.exists(subj_node_ts_file) and os.path.exists(lh_subj_rest1_lr_file) and os.path.exists(lh_subj_rest1_rl_file) and os.path.exists(lh_subj_rest2_lr_file) and os.path.exists(lh_subj_rest2_rl_file):
-            # try:
-            lh_subj_rest1_lr_data = extract_ts_from_mesh(lh_subj_rest1_lr_file)
-            lh_subj_rest1_rl_data = extract_ts_from_mesh(lh_subj_rest1_rl_file)
-            lh_subj_rest2_lr_data = extract_ts_from_mesh(lh_subj_rest2_lr_file)
-            lh_subj_rest2_rl_data = extract_ts_from_mesh(lh_subj_rest2_rl_file)
+            try:
+                lh_subj_rest1_lr_data = extract_ts_from_mesh(lh_subj_rest1_lr_file)
+                lh_subj_rest1_rl_data = extract_ts_from_mesh(lh_subj_rest1_rl_file)
+                lh_subj_rest2_lr_data = extract_ts_from_mesh(lh_subj_rest2_lr_file)
+                lh_subj_rest2_rl_data = extract_ts_from_mesh(lh_subj_rest2_rl_file)
     
-            rh_subj_rest1_lr_data = extract_ts_from_mesh(rh_subj_rest1_lr_file)
-            rh_subj_rest1_rl_data = extract_ts_from_mesh(rh_subj_rest1_rl_file)
-            rh_subj_rest2_lr_data = extract_ts_from_mesh(rh_subj_rest2_lr_file)
-            rh_subj_rest2_rl_data = extract_ts_from_mesh(rh_subj_rest2_rl_file)
+                rh_subj_rest1_lr_data = extract_ts_from_mesh(rh_subj_rest1_lr_file)
+                rh_subj_rest1_rl_data = extract_ts_from_mesh(rh_subj_rest1_rl_file)
+                rh_subj_rest2_lr_data = extract_ts_from_mesh(rh_subj_rest2_lr_file)
+                rh_subj_rest2_rl_data = extract_ts_from_mesh(rh_subj_rest2_rl_file)
     
-            lh_data = np.concatenate((lh_subj_rest1_lr_data, lh_subj_rest1_rl_data, lh_subj_rest2_lr_data, lh_subj_rest2_rl_data), axis=1)
-            rh_data = np.concatenate((rh_subj_rest1_lr_data, rh_subj_rest1_rl_data, rh_subj_rest2_lr_data, rh_subj_rest2_rl_data), axis=1)
-            
-            subj_node_ts = np.genfromtxt(subj_node_ts_file).T
+                lh_data = np.concatenate((lh_subj_rest1_lr_data, lh_subj_rest1_rl_data, lh_subj_rest2_lr_data, lh_subj_rest2_rl_data), axis=1)
+                rh_data = np.concatenate((rh_subj_rest1_lr_data, rh_subj_rest1_rl_data, rh_subj_rest2_lr_data, rh_subj_rest2_rl_data), axis=1)
+                
+                subj_node_ts = np.genfromtxt(subj_node_ts_file).T
     
-            # for i in range(arsg.num_samples):
-            for i in range(4, 5):
-                subj_rsfc_file = os.path.join(args.output_dir, "joint_LR_%s_sample%d_rsfc.npy" % (subj_id, i))
+                for i in range(args.num_samples):
+                    subj_rsfc_file = os.path.join(rsfc_dir, "joint_LR_%s_sample%d_rsfc.npy" % (subj_id, i))
    
-                print(subj_rsfc_file) 
-                if not os.path.exists(subj_rsfc_file):
-                    ts = np.arange(i*sample_length, (i+1)*sample_length)
-                    lh_subj_conn = compute_corr_coeff(lh_data[:, ts], subj_node_ts[:, ts])
-                    rh_subj_conn = compute_corr_coeff(rh_data[:, ts], subj_node_ts[:, ts])
-                    lh_subj_conn[np.isnan(lh_subj_conn)] = 0
-                    rh_subj_conn[np.isnan(rh_subj_conn)] = 0
+                    if not os.path.exists(subj_rsfc_file):
+                        ts = np.arange(i*sample_length, (i+1)*sample_length)
+                        lh_subj_conn = compute_corr_coeff(lh_data[:, ts], subj_node_ts[:, ts])
+                        rh_subj_conn = compute_corr_coeff(rh_data[:, ts], subj_node_ts[:, ts])
+                        lh_subj_conn[np.isnan(lh_subj_conn)] = 0
+                        rh_subj_conn[np.isnan(rh_subj_conn)] = 0
     
-                    subj_rsfc_conn = np.concatenate((lh_subj_conn.T, rh_subj_conn.T))
-                    np.save(subj_rsfc_file, subj_rsfc_conn)
+                        subj_rsfc_conn = np.concatenate((lh_subj_conn.T, rh_subj_conn.T))
+                        np.save(subj_rsfc_file, subj_rsfc_conn)
     
-            # except:
-            #    print("Error", subj_id)
+            except:
+               print("Error", subj_id)

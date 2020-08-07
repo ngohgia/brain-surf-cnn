@@ -1,12 +1,14 @@
 import os
 import numpy as np
-from argparse import ArgumentParser
+import nibabel.gifti as gi
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utilities import CONTRASTS
+sys.path.insert(0, "..")
+from utils.utilities import CONTRASTS
 
-parser = ArgumentParser()
+parser = ArgumentParser(description="Compute resting-state fingerprints from timeseries in cifti format",
+                        formatter_class=ArgumentDefaultsHelpFormatter)
 
 parser.add_argument("--input_dir",
                     type=str,
@@ -28,22 +30,23 @@ if __name__ == "__main__":
     os.makedirs(contrasts_dir, exist_ok=True)
 
     for i in range(len(subj_ids)):
-        print(i+1, "/", len(subj_ids))
         subj = subj_ids[i]
+        print(i+1, "/", len(subj_ids), ":", subj)
     
         subj_task_data = []
-        subj_task_data_file = os.path.join(contrasts_dir, "%s_joint_LR_all_tasks.npy" % subj)
+        subj_task_data_file = os.path.join(contrasts_dir, "%s_joint_LR_task_contrasts.npy" % subj)
         for item in CONTRASTS:
             task, cope, c = item
         
-            lh_task_file = os.path.join(args.input_dir, task, subj, "cope%d.feat" % cope, "zstat1.L.func.gii")
-            rh_task_file = os.path.join(args.input_dir, task, subj, "cope%d.feat" % cope, "zstat1.R.func.gii")
-        
+            lh_task_file = os.path.join(args.input_dir, subj, task, "cope%d.feat" % cope, "zstat1.L.func.gii")
+            rh_task_file = os.path.join(args.input_dir, subj, task, "cope%d.feat" % cope, "zstat1.R.func.gii")
+       
             if os.path.exists(lh_task_file) and os.path.exists(rh_task_file):
-                lh_data = np.expand_dims(nib.gifti.read(lh_task_file).darrays[0].data, axis=0)
-                rh_data = np.expand_dims(nib.gifti.read(rh_task_file).darrays[0].data, axis=0)
+                lh_data = gi.read(lh_task_file).darrays[0].data
+                rh_data = gi.read(rh_task_file).darrays[0].data
     
-                joint_LR_data = np.concatenate((lh_data, rh_data))
-                subj_task_data.append(joint_LR_data)
+                # joint_LR_data = np.concatenate((lh_data, rh_data), axis=-1)
+                subj_task_data.append(lh_data)
+                subj_task_data.append(rh_data)
     
         np.save(subj_task_data_file, subj_task_data)

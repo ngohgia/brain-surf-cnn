@@ -60,6 +60,14 @@ GROUP_CONTRAST_IDS = [62, 63, 64, # LANGUAGE
                       68, 69, 73, # SOCIAL
                       80, 81, 82] + list(np.arange(0, 11)) + list(np.arange(14, 22)) + list(np.arange(36, 49)) + [30, 31, 32]
 
+def parse_contrasts_names(contrasts_file):
+    contrasts = []
+    with open(contrasts_file, "r") as fh:
+        for line in fh:
+            item = [part.strip() for part in line.split()]
+            contrasts.append(item)
+    return contrasts
+
 def contrast_mse_loss(output, target):
     assert(output.shape[0] == 2, "Can only handle batch of 2")
     recon_loss = torch.mean((output - target)**2, dim=-1).flatten()

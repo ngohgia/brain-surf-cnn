@@ -28,6 +28,10 @@ def baseline_arg_parser():
                         type=str,
                         help="Path to the output directory")
 
+    parser.add_argument("--contrast_names",
+                        type=str,
+                        help="Path to the file containing task contrasts names")
+
     parser.add_argument("--n_channels_per_hemi",
                         type=int,
                         default=50,
@@ -37,6 +41,11 @@ def baseline_arg_parser():
                         type=int,
                         default=64,
                         help="Number of input channels per hemisphere, default=50")
+
+    parser.add_argument("--n_output_channels",
+                        type=int,
+                        default=47,
+                        help="Number of output channels per hemisphere, default=47")
 
     parser.add_argument("--n_samples_per_subj",
                         type=int,

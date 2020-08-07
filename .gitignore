@@ -2,3 +2,6 @@ job_err
 job_outputs
 __pycache__
 .DS_Store
+sample_data
+sample_outputs
+.ipynb_checkpoints
