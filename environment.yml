@@ -4,9 +4,18 @@ channels:
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
+  - absl-py=0.9.0=py36_0
   - blas=1.0=mkl
+  - blinker=1.4=py36_0
+  - brotlipy=0.7.0=py36h7b6447c_1000
+  - c-ares=1.15.0=h7b6447c_1001
   - ca-certificates=2020.6.24=0
+  - cachetools=4.1.1=py_0
   - certifi=2020.6.20=py36_0
+  - cffi=1.14.1=py36he30daa8_0
+  - chardet=3.0.4=py36_1003
+  - click=7.1.2=py_0
+  - cryptography=2.9.2=py36h1ba5d50_0
   - cudatoolkit=10.1.243=h6bb024c_0
   - cycler=0.10.0=py36_0
   - dbus=1.13.16=hb2f20db_0
@@ -14,9 +23,12 @@ dependencies:
   - fontconfig=2.13.0=h9420a91_0
   - freetype=2.10.2=h5ab3b9f_0
   - glib=2.65.0=h3eb4bd4_0
+  - google-auth=1.20.1=py_0
+  - google-auth-oauthlib=0.4.1=py_2
   - gst-plugins-base=1.14.0=hbbd80ab_1
   - gstreamer=1.14.0=hb31296c_0
   - icu=58.2=he6710b0_3
+  - idna=2.10=py_0
   - intel-openmp=2020.1=217
   - jpeg=9b=h024ee3a_2
   - kiwisolver=1.2.0=py36hfd86e86_0
@@ -27,6 +39,7 @@ dependencies:
   - libgcc-ng=9.1.0=hdf63c60_0
   - libgfortran-ng=7.3.0=hdf63c60_0
   - libpng=1.6.37=hbc83047_0
+  - libprotobuf=3.12.3=hd408876_0
   - libstdcxx-ng=9.1.0=hdf63c60_0
   - libtiff=4.1.0=h2733197_1
   - libuuid=1.0.3=h1bed415_2
@@ -43,18 +56,27 @@ dependencies:
   - ninja=1.9.0=py36hfd86e86_0
   - numpy=1.18.5=py36ha1c710e_0
   - numpy-base=1.18.5=py36hde5b4d6_0
+  - oauthlib=3.1.0=py_0
   - olefile=0.46=py36_0
   - openssl=1.1.1g=h7b6447c_0
   - pcre=8.44=he6710b0_0
   - pillow=7.2.0=py36hb39fc2d_0
   - pip=20.1.1=py36_1
+  - pyasn1=0.4.8=py_0
+  - pycparser=2.20=py_2
+  - pyjwt=1.7.1=py36_0
+  - pyopenssl=19.1.0=py_1
   - pyparsing=2.4.7=py_0
   - pyqt=5.9.2=py36h05f1152_2
+  - pysocks=1.7.1=py36_0
   - python=3.6.10=h7579374_2
   - python-dateutil=2.8.1=py_0
   - pytorch=1.5.1=py3.6_cuda10.1.243_cudnn7.6.3_0
   - qt=5.9.7=h5867ecd_1
   - readline=8.0=h7b6447c_0
+  - requests=2.24.0=py_0
+  - requests-oauthlib=1.3.0=py_0
+  - rsa=4.0=py_0
   - setuptools=49.2.0=py36_0
   - sip=4.19.8=py36hf484d3e_0
   - six=1.15.0=py_0
@@ -62,14 +84,33 @@ dependencies:
   - tk=8.6.10=hbc83047_0
   - torchvision=0.6.1=py36_cu101
   - tornado=6.0.4=py36h7b6447c_1
+  - urllib3=1.25.9=py_0
+  - werkzeug=1.0.1=py_0
   - wheel=0.34.2=py36_0
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.5=h0b5b093_0
   - pip:
+    - astunparse==1.6.3
+    - gast==0.3.3
+    - google-pasta==0.2.0
+    - grpcio==1.31.0
+    - h5py==2.10.0
+    - importlib-metadata==1.7.0
     - joblib==0.16.0
+    - keras-preprocessing==1.1.2
+    - markdown==3.2.2
     - nibabel==3.1.1
+    - opt-einsum==3.3.0
     - packaging==20.4
+    - protobuf==3.12.4
+    - pyasn1-modules==0.2.8
     - scikit-learn==0.23.1
-    - scipy==1.5.1
+    - scipy==1.4.1
+    - tensorboard==2.3.0
+    - tensorboard-plugin-wit==1.7.0
+    - tensorflow-estimator==2.3.0
+    - termcolor==1.1.0
     - threadpoolctl==2.1.0
+    - wrapt==1.12.1
+    - zipp==3.1.0

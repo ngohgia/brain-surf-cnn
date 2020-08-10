@@ -1,7 +1,8 @@
 ## Reference
 Gia H. Ngo, Meenakshi Khosla, Keith Jamison, Amy Kuceyeski, Mert R. Sabuncu. **From Connectomic to Task-evoked Fingerprints: Individualized Prediction of Task Contrasts fromResting-state Functional Connectivity** (Accepted to MICCAI 2020)
 
-[Project Webpage](https://ngohgia.github.io/brain-surf-cnn)
+[[Project Webpage](https://ngohgia.github.io/brain-surf-cnn)]
+[[Paper](https://arxiv.org/pdf/2008.02961.pdf)]
 
 ----
 

@@ -8,6 +8,7 @@ import torch.optim as optim
 import torch.nn as nn
 from torch.nn.parameter import Parameter
 from torch.utils.data import Dataset, DataLoader
+from torch.utils.tensorboard import SummaryWriter
 
 from model.brain_surf_cnn import BrainSurfCNN
 from utils import experiment
@@ -29,6 +30,7 @@ if __name__ == "__main__":
         os.makedirs(output_dir)
     else:
         raise Exception("Output dir exists: %s" % output_dir)
+    writer = SummaryWriter(os.path.join(output_dir, "logs"))
 
 
     """Load Data"""
@@ -113,6 +115,12 @@ if __name__ == "__main__":
         train_loss, train_corr = experiment.train(model, train_loader, contrasts, optimizer, loss_fn, args.loss, within_subj_margin, across_subj_margin)
         val_loss, val_corr     = experiment.eval(model, val_loader, contrasts, loss_fn, args.loss, within_subj_margin, across_subj_margin)
 
+        writer.add_scalar('training loss', train_loss, epoch)
+        writer.add_scalar('training corr', train_corr, epoch)
+
+        writer.add_scalar('validation loss', val_loss, epoch)
+        writer.add_scalar('validation corr', val_corr, epoch)
+
         val_losses.append(val_loss)
         val_corrs.append(val_corr)
 
@@ -129,3 +137,4 @@ if __name__ == "__main__":
             save_checkpoint(model, optimizer, scheduler, epoch, "checkpoint_%d.pth" % epoch, output_dir)
         scheduler.step()
     save_checkpoint(model, optimizer, scheduler, args.epochs, "checkpoint_%d.pth" % args.epochs, output_dir)
+    writer.close()
